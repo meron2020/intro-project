@@ -1,20 +1,24 @@
 import json
 
-from Sentence import Sentence
-from Task_1.Processor import Processor
+import json_manager
+from Processor import Processor
 
 
 class SequenceCounter:
 
-    def __init__(self, preprocessed_flag, max_length, sentence_file=None, words_to_remove_file_path=None, preprocessed_json=None):
+    def __init__(self, preprocessed_flag, sentence_file=None, words_to_remove_file_path=None,
+                 preprocessed_json_file_path=None):
         self.sentence_list = []
         if preprocessed_flag:
-            self.sentence_list = preprocessed_json["Processed Sentences"]
+            preprocessed_json = json_manager.load_json_file(preprocessed_json_file_path)
+            self.sentences = preprocessed_json["Question 1"]["Processed Sentences"]
         else:
             self.sentences = Processor.read_csv_file(sentence_file)
             words_to_remove = Processor.read_csv_file(words_to_remove_file_path)
             Processor.clean_sentences(self.sentences, words_to_remove)
 
+    # Function takes the length of a sequence as an input and the sentence itself and
+    # returns a list of all the sequences of that length
     @staticmethod
     def create_seq_list_for_sentence(seq_length, sentence):
         sequence_list = []
@@ -51,16 +55,6 @@ class SequenceCounter:
 
         return list_of_lists
 
-    # {
-    #     "Question 2": {
-    #         "3-Seq Counts": [
-    #             ["1_seq", [["away", 1], ["caught", 1], ["flew", 1], ["harry", 1], ["hermione", 1], ["snitch", 3]]],
-    #             ["2_seq", [["caught snitch", 1], ["flew away", 1], ["harry caught", 1], ["hermione snitch", 1],
-    #                        ["snitch flew", 1]]],
-    #             ["3_seq", [["harry caught snitch", 1], ["snitch flew away", 1]]]
-    #         ]
-    #     }
-    # }
     @staticmethod
     # Function iterates from 0 to max_sequences and adds all dictionaries together
     def create_final_dictionary(max_length, sentences):
@@ -69,6 +63,4 @@ class SequenceCounter:
             seq_list = SequenceCounter.count_each_sequence(SequenceCounter.create_sequence_list(i, sentences))
             final_dict[str(i) + "_seq"] = SequenceCounter.turn_dict_to_list(seq_list)
 
-        return {"Question 2" :{str(max_length) + "-Seq Counts": SequenceCounter.turn_dict_to_list(final_dict)}}
-
-
+        return json.dumps({"Question 2": {str(max_length) + "-Seq Counts": SequenceCounter.turn_dict_to_list(final_dict)}})

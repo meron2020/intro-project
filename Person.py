@@ -21,26 +21,4 @@ class Person:
             nickname.clean(unwanted_words)
 
 
-    # Function returns True if the nickname belongs to this person
-    def nickname_is_person(self, nickname):
-        pass
-
-    # Function returns number of times person is mentioned in sentence
-    # Not count same person twice
-    def check_person_in_sentence(self, sentence) -> Sentence:
-        if sentence.count_sequence_in_sequence_list(self.real_name):
-            return sentence
-
-    # Iterates over sentences and returns a list of sentence_windows person exists in
-    def find_persons_sentence_windows(self, person, sentence_windows):
-        pass
-
-    # Iterates over all persons, checks how many windows together in.
-    # If >= than needed amount, add edge. Make sure to add edge back.
-    # Check if edge already exists to not add twice. And make sure to check self.
-    def find_connections(self):
-        pass
-
-
-
 
